@@ -8,6 +8,9 @@
     <title>Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notie/4.3.1/notie.min.css"
+          integrity="sha512-UrjLcAek5jbj1vwGbXkviPHtgSNVNQCedX7cBIMDdSI2iZtUcZcoTh2Sqc8R9mVcijOjFUi1IlxhfrE1uWaIog=="
+          crossorigin="anonymous"/>
     <style>
         .chatbox {
             outline: 1px solid silver;
@@ -65,6 +68,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notie/4.3.1/notie.min.js"
+        integrity="sha512-NHRCwRf2LnVSlLDejCA9oS3fG3/FLSQIPCjAWl3M7tVi5wszwr6FxkjotWnQDXLE+aLKcxRrzFDNEgXj9nvkPw=="
+        crossorigin="anonymous"></script>
 
 <script>
     let socket = null;
@@ -120,15 +126,14 @@
         }
 
 
-        let userInput = document.getElementById("username");
-        userInput.addEventListener("change", function () {
+        userField.addEventListener("change", function () {
             let jsonData = {};
             jsonData["action"] = "username";
             jsonData["username"] = this.value;
             socket.send(JSON.stringify(jsonData));
         })
 
-        document.getElementById("message").addEventListener("keydown", function (event) {
+        messageField.addEventListener("keydown", function (event) {
             if (event.code === "Enter") {
                 if (!socket) {
                     console.log("no connection");
@@ -136,7 +141,7 @@
                 }
 
                 if ((userField.value === "") || (messageField.value === "")) {
-                    alert ("fill out user and message");
+                    errorMessage("Fill out username and message!");
                     return false;
                 } else {
                     sendMessage()
@@ -144,14 +149,13 @@
 
                 event.preventDefault();
                 event.stopPropagation();
-                sendMessage();
             }
         })
 
 
-        document.getElementById("sendBtn").addEventListener("click", function() {
+        document.getElementById("sendBtn").addEventListener("click", function () {
             if ((userField.value === "") || (messageField.value === "")) {
-                alert ("fill out user and message");
+                errorMessage("Fill out username and message!");
                 return false;
             } else {
                 sendMessage()
@@ -162,10 +166,17 @@
     function sendMessage() {
         let jsonData = {};
         jsonData["action"] = "broadcast";
-        jsonData["username"] = document.getElementById("username").value;
-        jsonData["message"] = document.getElementById("message").value;
+        jsonData["username"] = userField.value;
+        jsonData["message"] = messageField.value;
         socket.send(JSON.stringify(jsonData))
-        document.getElementById("message").value = "";
+        messageField.value = "";
+    }
+
+    function errorMessage(msg) {
+        notie.alert({
+            type: 'error',
+            text: msg,
+        })
     }
 </script>
 </html>
