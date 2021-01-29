@@ -112,11 +112,15 @@ func ListenToWsChannel() {
 			response.ConnectedUsers = users
 			broadcastToAll(response)
 
-		}
+		case "left":
+			// handle the situation where a user leaves the page
+			response.Action = "list_users"
+			delete(clients, e.Conn)
+			users := getUserList()
+			response.ConnectedUsers = users
+			broadcastToAll(response)
 
-		//response.Action = "Got here"
-		//response.Message = fmt.Sprintf("Some message, and action was %s", e.Action)
-		//broadcastToAll(response)
+		}
 	}
 }
 
