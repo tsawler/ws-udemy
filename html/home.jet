@@ -72,6 +72,8 @@
         integrity="sha512-NHRCwRf2LnVSlLDejCA9oS3fG3/FLSQIPCjAWl3M7tVi5wszwr6FxkjotWnQDXLE+aLKcxRrzFDNEgXj9nvkPw=="
         crossorigin="anonymous"></script>
 
+<script src="/static/reconnecting-websocket.min.js"></script>
+
 <script>
     let socket = null;
     let o = document.getElementById("output");
@@ -86,7 +88,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        socket = new WebSocket("ws://127.0.0.1:8080/ws");
+        socket = new ReconnectingWebSocket("ws://127.0.0.1:8080/ws", null, {debug: true, reconectInterval: 3000});
 
         socket.onopen = () => {
             console.log("Successfully connected");
